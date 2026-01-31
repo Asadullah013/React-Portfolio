@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 const CodeFloater = () => {
   const [floaters, setFloaters] = useState([]);
-  const symbols = ["< >", "{ }", "();", "if", "for", "const", "let", "return", "=>"];
+
+  // ✅ Use useMemo to stabilize symbols array
+  const symbols = useMemo(() => ["< >", "{ }", "();", "if", "for", "const", "let", "return", "=>"], []);
 
   useEffect(() => {
     const createFloater = () => {
@@ -14,9 +16,9 @@ const CodeFloater = () => {
         size: Math.random() * 25 + 14,
         duration: Math.random() * 12 + 8,
       };
-      
+
       setFloaters(prev => [...prev, newFloater]);
-      
+
       setTimeout(() => {
         setFloaters(prev => prev.filter(f => f.id !== newFloater.id));
       }, 15000);
@@ -24,7 +26,7 @@ const CodeFloater = () => {
 
     const interval = setInterval(createFloater, 300);
     return () => clearInterval(interval);
-  }, []);
+  }, [symbols]); // ✅ symbols added to dependency array
 
   return (
     <>
