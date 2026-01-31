@@ -1,0 +1,48 @@
+.App {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Desktop layout */
+#sidebar {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+}
+
+#content {
+  margin-left: 250px;
+  transition: all 0.3s ease;
+  min-height: 100vh;
+}
+
+/* Mobile layout - navbar at top */
+@media (max-width: 991.98px) {
+  #sidebar {
+    display: none !important;
+  }
+  
+  #content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .navbar {
+    display: block !important;
+  }
+}
+
+/* Large screens - hide navbar, show sidebar */
+@media (min-width: 992px) {
+  .navbar.navbar-expand-lg.fixed-top.d-lg-none {
+    display: none !important;
+  }
+  
+  #sidebar {
+    display: block !important;
+  }
+}
