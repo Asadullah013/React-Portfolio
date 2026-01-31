@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import CodeFloater from './CodeFloater';
 import Blob from './Blob';
 
@@ -10,74 +9,63 @@ const About = () => {
   const [showAnimation, setShowAnimation] = useState(false);
   const imgRef = useRef(null);
   const containerRef = useRef(null);
-  
-  const words = [
+
+  // ✅ Use useMemo to stabilize the words array
+  const words = useMemo(() => [
     "Full-Stack Developer",
     "React Developer",
-    "Software Engineer", 
+    "Software Engineer",
     "Database Integration Expert"
-  ];
+  ], []);
 
   // Trigger scroll animation on mount
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowAnimation(true);
     }, 100);
-    
     return () => clearTimeout(timer);
   }, []);
 
-  // Typing effect - EXTREMELY FAST VERSION
+  // Typing effect
   useEffect(() => {
     let timeout;
-    
     const type = () => {
       const currentWord = words[currentWordIndex];
-      
       if (!isDeleting) {
-        // Typing forward - EXTREMELY FAST
         if (text.length < currentWord.length) {
           setText(currentWord.substring(0, text.length + 1));
-          timeout = setTimeout(type, 30); // LIGHTNING FAST TYPING
+          timeout = setTimeout(type, 30);
         } else {
-          // Finished typing, VERY SHORT pause
           timeout = setTimeout(() => {
             setIsDeleting(true);
             type();
-          }, 600); // MINIMAL PAUSE
+          }, 600);
         }
       } else {
-        // Deleting - EXTREMELY FAST
         if (text.length > 0) {
           setText(currentWord.substring(0, text.length - 1));
-          timeout = setTimeout(type, 20); // LIGHTNING FAST DELETING
+          timeout = setTimeout(type, 20);
         } else {
-          // Finished deleting, move to next word
           setIsDeleting(false);
           setCurrentWordIndex((prev) => (prev + 1) % words.length);
-          timeout = setTimeout(type, 100); // ALMOST NO PAUSE
+          timeout = setTimeout(type, 100);
         }
       }
     };
-
-    // Start typing immediately
-    timeout = setTimeout(type, 100); // INSTANT START
+    timeout = setTimeout(type, 100);
     return () => clearTimeout(timeout);
-  }, [text, currentWordIndex, isDeleting]);
+  }, [text, currentWordIndex, isDeleting, words]); // ✅ words added to dependency array
 
-  // Mouse move effect for image
+  // Mouse move effect
   const handleMouseMove = (e) => {
     if (!imgRef.current) return;
-    
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
-    
     const rotateX = ((y - centerY) / centerY) * 10;
     const rotateY = ((x - centerX) / centerX) * 10;
-    
     imgRef.current.style.transform = `perspective(1000px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
   };
 
@@ -92,17 +80,16 @@ const About = () => {
       <CodeFloater />
       <Blob color="#ff00ff" size="300px" top="10%" left="10%" />
       <Blob color="#009dff" size="250px" bottom="10%" right="10%" delay="2s" />
-
       <div className={`container about-container fade-up ${showAnimation ? 'show' : ''}`} ref={containerRef}>
-        <div 
+        <div
           className="profile-img-wrapper"
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
         >
-          <img 
+          <img
             ref={imgRef}
-            src="/assets/image.jpeg" 
-            alt="Asadullah Magsi" 
+            src="/assets/image.jpeg"
+            alt="Asadullah Magsi"
             className="profile-img img-fluid rounded-circle"
             onError={(e) => {
               e.target.onerror = null;
@@ -110,7 +97,6 @@ const About = () => {
             }}
           />
         </div>
-
         <div className="hero-text">
           <h5 className="text-muted">Hi, I'm</h5>
           <h1 className="display-4 fw-bold mb-3">Asadullah Magsi</h1>
@@ -121,7 +107,6 @@ const About = () => {
           <p className="lead mb-4">
             I craft modern, high-performance, and visually engaging web experiences.
           </p>
-
           <div className="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3 mb-4">
             <a href="https://smiupk-my.sharepoint.com/:w:/g/personal/csc23f013_stu_smiu_edu_pk/IQD_mCfF1y3UQ7cm_jHanXbWAe3IWccqIJCUy_HuvCev5QY?e=G4H9Bj" className="btn hero-btn btn-lg">
               <i className="bi bi-file-earmark-person me-2"></i>View Resume
@@ -130,7 +115,6 @@ const About = () => {
               <i className="bi bi-envelope me-2"></i>Contact Me
             </a>
           </div>
-
           <div className="social-icons">
             <a href="https://github.com/Asadullah013" className="social-icon" title="GitHub">
               <i className="bi bi-github"></i>
@@ -138,7 +122,7 @@ const About = () => {
             <a href="https://www.linkedin.com/in/asadullah-magsi-808597322/" className="social-icon" title="LinkedIn">
               <i className="bi bi-linkedin"></i>
             </a>
-            <a href="https://www.instagram.com/magsi013?igsh=a3ViN3E4YjB0bmxv" className="social-icon" title="Twitter">
+            <a href="https://www.instagram.com/magsi013?igsh=a3ViN3E4YjB0bmxv" className="social-icon" title="Instagram">
               <i className="bi bi-instagram"></i>
             </a>
           </div>
